@@ -196,17 +196,22 @@ impl Manager {
     fn open_addon_metadata_file(&self, path: &Path, addon_name: &str) -> Result<File> {
         let mut filepath = path.to_owned();
         let mut filepath_lowercase = path.to_owned();
+        let mut filepath_addon = path.to_owned();
 
         let filename = PathBuf::from(format!("{}.txt", addon_name));
         let filename_lowercase = PathBuf::from(format!("{}.txt", addon_name.to_lowercase()));
+        let filename_addon = PathBuf::from(format!("{}.addon", addon_name));
 
         filepath.push(filename);
         filepath_lowercase.push(filename_lowercase);
+        filepath_addon.push(filename_addon);
 
         if filepath.exists() {
             File::open(&filepath).map_err(|err| Error::Other(Box::new(err)))
         } else if filepath_lowercase.exists() {
             File::open(&filepath_lowercase).map_err(|err| Error::Other(Box::new(err)))
+        } else if filepath_addon.exists() {
+            File::open(&filepath_addon).map_err(|err| Error::Other(Box::new(err)))
         } else {
             Err(Error::Other("missing addon metadata file".into()))
         }
